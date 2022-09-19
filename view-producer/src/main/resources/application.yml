@@ -1,0 +1,15 @@
+server:
+  port: 9001
+
+spring:
+  application:
+    name: view-producer
+
+kafka:
+  bootstrapAddress: localhost:9092
+  topic:
+    name: events
+
+logging:
+  pattern:
+    console: '%-5level ==> %msg%n'
