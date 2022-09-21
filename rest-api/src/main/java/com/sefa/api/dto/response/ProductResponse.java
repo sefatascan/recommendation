@@ -2,6 +2,7 @@ package com.sefa.api.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.sefa.api.util.RecommendationHelper;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,7 @@ public class ProductResponse {
     private ResponseType type;
 
     public static ProductResponse of(String userId, List<String> products, ResponseType type) {
-        return ProductResponse.builder().userId(userId).products(products).type(type).build();
+        return ProductResponse.builder().userId(userId).products(RecommendationHelper.getValidRecommendation(products)).type(type).build();
     }
 
     @RequiredArgsConstructor

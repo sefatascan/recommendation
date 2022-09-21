@@ -8,12 +8,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.sefa.api.dto.response.ProductResponse.ResponseType.NON_PERSONALIZED;
 import static com.sefa.api.dto.response.ProductResponse.ResponseType.PERSONALIZED;
-import static java.util.Objects.nonNull;
 
 @Service
 @RequiredArgsConstructor
@@ -45,19 +43,13 @@ public class RecommendationService {
 
         List<String> bestSellers = bestSellerRepository.findByProductOrderByTotal(productIds, Pageable.ofSize(PRODUCT_SIZE));
 
-        return getValidRecommendation(bestSellers);
+        return bestSellers;
     }
 
     public List<String> getBestSellerWithoutFilter() {
         List<String> bestSellers = bestSellerRepository.findOrderByTotal(Pageable.ofSize(PRODUCT_SIZE));
 
-        return getValidRecommendation(bestSellers);
+        return bestSellers;
     }
 
-    private List<String> getValidRecommendation(List<String> bestSellers) {
-        if (nonNull(bestSellers) && bestSellers.size() > 5) {
-            return bestSellers;
-        }
-        return new ArrayList<>();
-    }
 }
