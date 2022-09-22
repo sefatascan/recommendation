@@ -1,0 +1,21 @@
+server:
+  port: 9003
+
+spring:
+  application:
+    name: etl-api
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    open-in-view: false
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        ddl-auto: none
+  datasource:
+    url: jdbc:postgresql://postgres:5432/data-db
+    username: postgres
+    password: 123456
+    driverClassName: org.postgresql.Driver

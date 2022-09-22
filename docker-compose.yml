@@ -1,5 +1,48 @@
 version: '2'
 services:
+  view-producer:
+    build: ./view-producer
+    image: view-producer:latest
+    container_name: view-producer
+    hostname: view-producer
+    depends_on:
+      - zookeeper
+      - kafka
+    ports:
+      - "9001:9001"
+
+  stream-reader:
+    build: ./stream-reader
+    image: stream-reader:latest
+    container_name: stream-reader
+    hostname: stream-reader
+    depends_on:
+      - zookeeper
+      - kafka
+      - postgres
+    ports:
+      - "9002:9002"
+
+  etl-api:
+    build: ./etl-api
+    image: etl-api:latest
+    container_name: etl-api
+    hostname: etl-api
+    depends_on:
+      - postgres
+    ports:
+      - "9003:9003"
+
+  rest-api:
+    build: ./rest-api
+    image: rest-api:latest
+    container_name: rest-api
+    hostname: rest-api
+    depends_on:
+      - postgres
+    ports:
+      - "9004:9004"
+
   zookeeper:
     image: confluentinc/cp-zookeeper
     hostname: zookeeper
@@ -19,8 +62,13 @@ services:
     container_name: kafka
     ports:
       - "9092:9092"
+    expose:
+      - "9093"
     environment:
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://127.0.0.1:9092
+      KAFKA_ADVERTISED_LISTENERS: LISTENER_INTERNAL://kafka:9093,LISTENER_EXTERNAL://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_INTERNAL:PLAINTEXT,LISTENER_EXTERNAL:PLAINTEXT
+      KAFKA_LISTENERS: LISTENER_INTERNAL://kafka:9093,LISTENER_EXTERNAL://localhost:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_EXTERNAL
       KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
       KAFKA_BROKER_ID: 1
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
